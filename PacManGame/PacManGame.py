@@ -141,7 +141,7 @@ class PacmanGame(arcade.Window):
             self.player2.change_x = 0
 
     def check_wall_collision(self, player):
-        #Check if the player collides with a walls
+        #Check if the player collides with a wall
         return arcade.check_for_collision_with_list(player, self.wall_list)
 
     def on_update(self, delta_time):
