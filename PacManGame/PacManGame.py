@@ -2,13 +2,13 @@ import arcade
 import arcade.gui
 
 # Constants
-TILE_SCALING = 1.05
+TILE_SCALING = 1
 PLAYER_SCALING = 1
-SCREEN_WIDTH = 1100
-SCREEN_HEIGHT = 1000
+SCREEN_WIDTH = 1080
+SCREEN_HEIGHT = 920
 SCREEN_TITLE = "Multiplayer Pacman"
-MOVEMENT_SPEED = 2
-MOVEMENT_SPEED2 = 2.3
+MOVEMENT_SPEED = 2.3
+MOVEMENT_SPEED2 = 2.5
 SPRITE_PIXEL_SIZE = 60
 GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 MAX_LEVEL = 3
@@ -37,6 +37,8 @@ class PacmanGame(arcade.Window):
 
         self.gui_camera = None
         self.camera = None
+        
+        self.player2_frozen = False
 
         self.game_over = False
 
@@ -59,20 +61,20 @@ class PacmanGame(arcade.Window):
             self.player2.center_y = 480
         elif level == 2:
             self.player1 = arcade.Sprite("PCT.png", 0.11)
-            self.player1.center_x = 120
+            self.player1.center_x = 140
             self.player1.center_y = 600
 
             self.player2 = arcade.Sprite("PCT2.png", 0.04)
-            self.player2.center_x = 1020
-            self.player2.center_y = 650
+            self.player2.center_x = 960
+            self.player2.center_y = 600
         else:
             self.player1 = arcade.Sprite("PCT.png", 0.11)
             self.player1.center_x = 100
-            self.player1.center_y = 480
+            self.player1.center_y = 640
 
             self.player2 = arcade.Sprite("PCT2.png", 0.04)
             self.player2.center_x = 1000
-            self.player2.center_y = 480
+            self.player2.center_y = 640
             
 
         # Load the tile map
@@ -103,12 +105,15 @@ class PacmanGame(arcade.Window):
         if level == 1:
             self.wall_list = self.tile_map.sprite_lists["Walls"]
             self.coin_list = self.tile_map.sprite_lists["Coins"]
+            self.powerup_list = self.tile_map.sprite_lists.get("Powerups", None)
         elif level == 2:
             self.wall_list = self.tile_map.sprite_lists["Walls2"]
             self.coin_list = self.tile_map.sprite_lists["Coins2"]
+            self.powerup_list = self.tile_map.sprite_lists.get("Powerups2", None)
         else:
             self.wall_list = self.tile_map.sprite_lists["Walls3"]
             self.coin_list = self.tile_map.sprite_lists["Coins3"]
+            self.powerup_list = self.tile_map.sprite_lists.get("Powerups3", None)
 
         if self.tile_map.background_color:
             arcade.set_background_color(self.tile_map.background_color)
@@ -141,6 +146,7 @@ class PacmanGame(arcade.Window):
         self.player2.draw()
         self.wall_list.draw()
         self.coin_list.draw()
+        self.powerup_list.draw()
         arcade.draw_text(f"Player 1 Score: {self.score1}", 10, 20, arcade.color.WHITE, 14)
         arcade.draw_text(f"Player 2 Score: {self.score2}", 10, 40, arcade.color.WHITE, 14)
         
@@ -185,11 +191,32 @@ class PacmanGame(arcade.Window):
     def check_wall_collision(self, player):
         # Check if the player collides with a wall
         return arcade.check_for_collision_with_list(player, self.wall_list)
+    
+    def freeze_player2(self):
+        # Disable player2 movement
+        self.player2.change_x = 0
+        self.player2.change_y = 0
+        # Set the frozen flag to True
+        self.player2_frozen = True
+        # Schedule a method to unfreeze player2 after 7 seconds
+        self.unfreeze_schedule = arcade.schedule(self.unfreeze_player2, 7)
+
+
+    def unfreeze_player2(self, delta_time):
+        # Enable player2 movement
+        self.player2.change_x = MOVEMENT_SPEED2  # Adjust to the default movement speed
+        self.player2.change_y = 0
+        # Set the frozen flag to False
+        self.player2_frozen = False
+        # Cancel the schedule for unfreezing player2
+        arcade.unschedule(self.unfreeze_schedule)
 
     def on_update(self, delta_time):
         
         # Move player 1
         self.player1.update() 
+        if not self.player2_frozen:
+            self.player2.update()
         if self.check_wall_collision(self.player1):
             self.player1.center_x -= self.player1.change_x
             self.player1.center_y -= self.player1.change_y
@@ -199,7 +226,7 @@ class PacmanGame(arcade.Window):
             self.player2.center_y -= self.player2.change_y
             
         # Move player 2
-        self.player2.update() 
+
         self.physics_engine1.update()
         self.physics_engine2.update()
         
@@ -222,6 +249,15 @@ class PacmanGame(arcade.Window):
                 self.setup(self.current_level)
             else:
                 self.game_over = True
+                
+        if self.powerup_list:
+            freeze_hit_list = arcade.check_for_collision_with_list(self.player1, self.powerup_list)
+            for powerup in freeze_hit_list:
+                # Remove the power-up sprite from the list
+                powerup.remove_from_sprite_lists()
+                # Apply freeze effect to Player 2 only if not already frozen
+                if not self.player2_frozen:
+                    self.freeze_player2()
             
         if arcade.check_for_collision(self.player1, self.player2):
             self.game_over = True  
@@ -229,6 +265,16 @@ class PacmanGame(arcade.Window):
         # Check if players collide
         if arcade.check_for_collision(self.player1, self.player2):
             self.game_over = True  
+            
+        if self.player1.center_x < 0:
+            self.player1.center_x = SCREEN_WIDTH
+        elif self.player1.center_x > SCREEN_WIDTH:
+            self.player1.center_x = 0
+
+        if self.player2.center_x < 0:
+            self.player2.center_x = SCREEN_WIDTH
+        elif self.player2.center_x > SCREEN_WIDTH:
+            self.player2.center_x = 0
 
         if self.game_over:
             arcade.close_window()
