@@ -1,8 +1,6 @@
 # PacManGame
 # To Do:
-# Next 2 Levels, gonna make in Tiled 
 # Make a completion goal(when they touch game ends and they can retry/go main menu/exit)
-# Correct their spawn points
 # Make Main Menu and End screens GUIs
 # Make Powerups
 # Make teleporters work
@@ -10,6 +8,9 @@
 
 # Progress
 # First Map completed
+# Second Map completed
+# Third Map completed
+# Corrected Spawn Points
 # players movement and coin collection finished(can be changed if wanted)
 # wall collisions completed
 # correct physics added
