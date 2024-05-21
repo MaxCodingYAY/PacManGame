@@ -14,6 +14,7 @@
 # wall collisions completed
 # correct physics added
 # teleporters work
+# One powerup made: Ice: Freeze then slow
 
 # Changes
 # changed resolution to 1080 x 920
