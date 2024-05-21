@@ -103,6 +103,10 @@
         {
          "firstgid":346,
          "source":"..\/..\/..\/..\/adiffcoin.tsx"
+        }, 
+        {
+         "firstgid":347,
+         "source":"..\/..\/..\/..\/newgroiuund.tsx"
         }],
  "tilewidth":32,
  "type":"map",

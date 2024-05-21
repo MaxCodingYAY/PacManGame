@@ -36,16 +36,20 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="adiffcoin.tsx" />
+    <Content Include="Chains.png" />
     <Content Include="coin.png" />
+    <Content Include="GrassBlock.png" />
+    <Content Include="NewSkySoil.png" />
     <Content Include="pacmanwalls.jpg" />
+    <Content Include="PartialSnow.png" />
     <Content Include="PCT.png" />
     <Content Include="PCT2.png" />
-    <Content Include="TestingMap.json" />
+    <Content Include="PureSnow.png" />
+    <Content Include="Skyrealm Map.json" />
+    <Content Include="SnowBrown.png" />
+    <Content Include="TheSoil.png" />
     <Content Include="Truepacman Map.json" />
-    <Content Include="walls.tsx" />
-    <Content Include="walltest.jpg" />
-    <Content Include="WallTesting.tsx" />
+    <Content Include="Truesnow Map.json" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
